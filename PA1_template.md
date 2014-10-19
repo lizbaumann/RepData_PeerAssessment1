@@ -153,9 +153,9 @@ print(paste0("Mean steps per day: ", round(imeanSteps),
 ```
 
 ####Observations: Comparing the histogram, mean and median with imputed NA values versus excluding the NA values:
-the histogram differs since it is total number of steps, it is increased after including imputed values
-the means are numerically the same, though computationally different
-the medians are numerically and computationally different (though very close numerically)
+The histogram differs since it is total number of steps, it is increased after including imputed values.  
+The means are numerically the same, though computationally different.  
+The medians are numerically and computationally different (though very close numerically).  
 
 
 ### Step 5: Are there differences in activity patterns between weekdays and weekends?
