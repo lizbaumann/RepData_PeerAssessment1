@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output:
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Objective
@@ -29,14 +24,14 @@ Relevant details of the data from the course assignment page instructions:
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```{r}
+
+```r
 unzip("activity.zip")  # assumes you have set working directory appropriately
 
 dat <- read.csv("activity.csv") 
 
 # str(dat)
 # summary(dat)
-
 ```
 
 Findings:
@@ -56,16 +51,26 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 First remove NAs, and use plyr library aggregate() function to summarize by day. 
 
-```{r}
+
+```r
 dat2 <- dat[!is.na(dat$steps), ]
 library(plyr)
 dailySteps <- aggregate(steps ~ date, dat, sum)
 hist(dailySteps$steps, main="Daily Number of Steps Taken", 
      xlab = "Daily Steps", col="green")
+```
+
+![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-2.png) 
+
+```r
 meanSteps <- mean(dailySteps$steps)
 medianSteps <- median(dailySteps$steps)
 print(paste0("Mean steps per day: ", round(meanSteps), 
              ". Median steps per day: ", round(medianSteps), "."))
+```
+
+```
+## [1] "Mean steps per day: 10766. Median steps per day: 10765."
 ```
 
 
@@ -75,16 +80,25 @@ print(paste0("Mean steps per day: ", round(meanSteps),
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 intervalSteps <- aggregate(steps ~ interval, dat, mean)
 plot(intervalSteps$interval, intervalSteps$steps, type="l", col="maroon", 
      main="Average Number of Steps per Time Interval", 
      xlab="Time Intervals (every 5 minutes)", ylab="Average Steps")
+```
 
+![plot of chunk unnamed-chunk-3](./PA1_template_files/figure-html/unnamed-chunk-3.png) 
+
+```r
 maxSteps <- max(intervalSteps$steps)
 print(paste0("Time interval with the largest average number of steps: interval # ",
              intervalSteps[intervalSteps$steps==maxSteps, 1], ", with steps = ",
              round(intervalSteps[intervalSteps$steps==maxSteps, 2])))
+```
+
+```
+## [1] "Time interval with the largest average number of steps: interval # 835, with steps = 206"
 ```
 
 
@@ -100,10 +114,17 @@ Note that there are a number of days/intervals where there are missing values (c
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r}
+
+```r
 missing <- dat[is.na(dat$steps), ]
 print(paste0("The total number of missing values in the Steps dataset: ", nrow(missing)))
+```
 
+```
+## [1] "The total number of missing values in the Steps dataset: 2304"
+```
+
+```r
 # impute missing values: use average of that interval over all days 
 notmissing <- dat[!is.na(dat$steps), ]
 missing <- missing[, 2:3] # before merging, remove the steps column that is all NA
@@ -118,10 +139,19 @@ imputed <- imputed[order(imputed$date, imputed$interval), ]
 idailySteps <- aggregate(steps ~ date, imputed, sum)
 hist(idailySteps$steps, main="Daily Number of Steps Taken, with Missing Values Imputed", 
      xlab = "Daily Steps", col="green")
+```
+
+![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
+
+```r
 imeanSteps <- mean(idailySteps$steps)
 imedianSteps <- median(idailySteps$steps)
 print(paste0("Mean steps per day: ", round(imeanSteps), 
              ". Median steps per day: ", round(imedianSteps), "."))
+```
+
+```
+## [1] "Mean steps per day: 10766. Median steps per day: 10766."
 ```
 
 ####Observations: Comparing the histogram, mean and median with imputed NA values versus excluding the NA values:
@@ -139,7 +169,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 
-```{r}
+
+```r
 imputed$date <- as.POSIXlt(imputed$date)
 imputed$day <- weekdays(imputed$date)
 imputed$daytype <- ifelse(imputed$day %in% c("Saturday", "Sunday"), "weekend", "weekday")
@@ -155,6 +186,11 @@ plot(weekdaySteps$interval, weekdaySteps$steps, type="l", col="maroon",
 plot(weekendSteps$interval, weekendSteps$steps, type="l", col="maroon", 
      main="Average Number of Steps per 5 Minute Time Interval: Weekends", 
      ylab="Weekend Avg Steps")
+```
+
+![plot of chunk unnamed-chunk-5](./PA1_template_files/figure-html/unnamed-chunk-5.png) 
+
+```r
 par(mfrow = c(1,1)) # reset default
 ```
 
