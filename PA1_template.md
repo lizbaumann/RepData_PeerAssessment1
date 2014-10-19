@@ -28,10 +28,10 @@ Relevant details of the data from the course assignment page instructions:
 ```r
 unzip("activity.zip")  # assumes you have set working directory appropriately
 
-dat <- read.csv("activity.csv") 
+rawdat <- read.csv("activity.csv") 
 
-# str(dat)
-# summary(dat)
+# str(rawdat)
+# summary(rawdat)
 ```
 
 Findings:
@@ -49,11 +49,9 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 2. Calculate and report the mean and median total number of steps taken per day
 
-First remove NAs, and use plyr library aggregate() function to summarize by day. 
-
 
 ```r
-dat2 <- dat[!is.na(dat$steps), ]
+dat <- rawdat[!is.na(rawdat$steps), ]
 library(plyr)
 dailySteps <- aggregate(steps ~ date, dat, sum)
 hist(dailySteps$steps, main="Daily Number of Steps Taken", 
@@ -116,7 +114,7 @@ Note that there are a number of days/intervals where there are missing values (c
 
 
 ```r
-missing <- dat[is.na(dat$steps), ]
+missing <- rawdat[is.na(rawdat$steps), ]
 print(paste0("The total number of missing values in the Steps dataset: ", nrow(missing)))
 ```
 
@@ -126,7 +124,7 @@ print(paste0("The total number of missing values in the Steps dataset: ", nrow(m
 
 ```r
 # impute missing values: use average of that interval over all days 
-notmissing <- dat[!is.na(dat$steps), ]
+notmissing <- rawdat[!is.na(rawdat$steps), ]
 missing <- missing[, 2:3] # before merging, remove the steps column that is all NA
 merged <- merge(missing, intervalSteps, by="interval")
 merged <- merged[order(merged$date, merged$interval), ]
@@ -189,8 +187,4 @@ plot(weekendSteps$interval, weekendSteps$steps, type="l", col="maroon",
 ```
 
 ![plot of chunk unnamed-chunk-5](./PA1_template_files/figure-html/unnamed-chunk-5.png) 
-
-```r
-par(mfrow = c(1,1)) # reset default
-```
 
